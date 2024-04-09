@@ -1,0 +1,9 @@
+[submodule "external/cpp-httplib"]
+	path = external/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib
+[submodule "external/tinyxml2"]
+	path = external/tinyxml2
+	url = https://github.com/leethomason/tinyxml2
+[submodule "external/cppcodec"]
+	path = external/cppcodec
+	url = https://github.com/tplgy/cppcodec
