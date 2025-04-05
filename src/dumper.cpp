@@ -65,8 +65,8 @@ void Dumper::dumpLeaderboard()
 		// Save files
 		int trackId = (((i - 1) / numDisciplines) * numDisciplines) + 1;
 		int disciplineId = (i - 1) % numDisciplines;
-		saveXml(board, trackId <= 287 ? trackId : i, disciplineId, trackId <= 287);
-		saveCsv(board, trackId <= 287 ? trackId : i, disciplineId, trackId <= 287);
+		save(board, false, trackId <= 287 ? trackId : i, disciplineId, trackId <= 287);
+		save(board, true, trackId <= 287 ? trackId : i, disciplineId, trackId <= 287);
 
 		// Destroy XML object
 		delete board;
@@ -78,7 +78,7 @@ void Dumper::dumpLeaderboard()
 
 void Dumper::setupRequest(tinyxml2::XMLDocument& request)
 {
-	const char* initialRequestText = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ranking platform=\"ps3\" sv=\"4.91\"><titleid>NPWR00429_00</titleid><board>1</board><start>1</start><list-max>10</list-max><option message=\"false\" info=\"true\"/></ranking>";
+	const char* initialRequestText = "<?xml version=\"1.0\" encoding=\"utf-8\"?><ranking platform=\"ps3\" sv=\"4.92\"><titleid>NPWR00429_00</titleid><board>1</board><start>1</start><list-max>10</list-max><option message=\"false\" info=\"true\"/></ranking>";
 	request.Parse(initialRequestText);
 }
 
@@ -147,24 +147,28 @@ tinyxml2::XMLDocument* Dumper::mergeSegments(std::vector<tinyxml2::XMLDocument*>
 	return board;
 }
 
-void Dumper::saveXml(tinyxml2::XMLDocument* board, int boardId, int disciplineId, bool isTimeBoard)
+void Dumper::save(tinyxml2::XMLDocument* board, bool saveAsCsv, int boardId, int disciplineId, bool isTimeBoard)
 {
-	if (isTimeBoard)
-		board->SaveFile(std::string("xml/" + boards.at(boardId) + " - " + disciplines.at(disciplineId) + ".xml").c_str());
+	std::string boardName = boards.contains(boardId) ? boards.at(boardId) : "unknown" + std::to_string(boardId);
+	std::string disciplineName = disciplines.contains(disciplineId) ? disciplines.at(disciplineId) : "unknown" + std::to_string(disciplineId);
+	if (saveAsCsv)
+	{
+		std::string csv = makeCsv(board, isTimeBoard);
+		std::ofstream csvOut;
+		if (isTimeBoard)
+			csvOut.open(std::string("csv/" + boardName + " - " + disciplineName + ".csv"));
+		else
+			csvOut.open(std::string("csv/" + boardName + ".csv"));
+		csvOut << csv;
+		csvOut.close();
+	}
 	else
-		board->SaveFile(std::string("xml/" + boards.at(boardId) + ".xml").c_str());
-}
-
-void Dumper::saveCsv(tinyxml2::XMLDocument* board, int boardId, int disciplineId, bool isTimeBoard)
-{
-	std::string csv = makeCsv(board, isTimeBoard);
-	std::ofstream csvOut;
-	if (isTimeBoard)
-		csvOut.open(std::string("csv/" + boards.at(boardId) + " - " + disciplines.at(disciplineId) + ".csv"));
-	else
-		csvOut.open(std::string("csv/" + boards.at(boardId) + ".csv"));
-	csvOut << csv;
-	csvOut.close();
+	{
+		if (isTimeBoard)
+			board->SaveFile(std::string("xml/" + boardName + " - " + disciplineName + ".xml").c_str());
+		else
+			board->SaveFile(std::string("xml/" + boardName + ".xml").c_str());
+	}
 }
 
 std::string Dumper::makeCsv(tinyxml2::XMLDocument* board, bool isTimeBoard)
@@ -210,8 +214,11 @@ std::string Dumper::makeCsv(tinyxml2::XMLDocument* board, bool isTimeBoard)
 			// Vehicle
 			std::string infoEncoded = record->FirstChildElement("info")->GetText();
 			std::vector<uint8_t> info = cppcodec::base64_rfc4648::decode(infoEncoded.c_str(), infoEncoded.size());
-			uint32_t vehicleId = (((info[0xA] & 0xF) << 8) + (info[9] & 0xF0)) >> 3;
-			csv += "," + vehicles.at(vehicleId) + ",";
+			uint32_t vehicleId = (((info[0xA] & 0xF) << 8) + (info[9] & 0xF8)) >> 3;
+			if (vehicles.contains(vehicleId))
+				csv += "," + vehicles.at(vehicleId) + ",";
+			else
+				csv += ",unknown" + std::to_string(vehicleId) + ",";
 
 			// Grade
 			uint8_t vehicleGradeId = info[0xE];

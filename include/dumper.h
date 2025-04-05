@@ -21,8 +21,7 @@ private:
 	void updateRequest(tinyxml2::XMLDocument& request, int boardId, int entryIndex, int entryCount);
 	int getTotal(httplib::Result result);
 	tinyxml2::XMLDocument* mergeSegments(std::vector<tinyxml2::XMLDocument*>& segments, int boardId);
-	void saveXml(tinyxml2::XMLDocument* board, int trackId, int disciplineId, bool isTimeBoard = true);
-	void saveCsv(tinyxml2::XMLDocument* board, int trackId, int disciplineId, bool isTimeBoard = true);
+	void save(tinyxml2::XMLDocument* board, bool saveAsCsv, int trackId, int disciplineId, bool isTimeBoard = true);
 	std::string makeCsv(tinyxml2::XMLDocument* board, bool isTimeBoard = true);
 	std::string formatAsTime(std::string milliseconds);
 
@@ -82,9 +81,7 @@ private:
 	};
 	const std::map<int, std::string> vehicles = {
 		{ 70, "Kincaid Ford F-150 Trophy Truck" },
-		{ 72, "Chevrolet Silverado CK-1500" }, // PS3
 		{ 73, "Chevrolet Silverado CK-1500" },
-		{ 74, "West Coast Choppers Stuka TT" }, // PS3
 		{ 75, "West Coast Choppers Stuka TT" },
 		{ 76, "Dodge Ram Trophy Truck" },
 		{ 78, "Colin McRae R4" },
@@ -133,9 +130,8 @@ private:
 		{ 133, "Mitsubishi Lancer Evolution IX" },
 		{ 134, "Mitsubishi Lancer Evolution IX" },
 		{ 135, "Mitsubishi Lancer Evolution IX" },
-		{ 136, "Subaru Impreza WRX STI [X Games]" }, // PS3
-		{ 137, "Mitsubishi Lancer Evolution X [X]" },
-		{ 138, "Subaru Impreza WRX STI [X Games]" },
+		{ 137, "Subaru Impreza WRX STI [X Games]" },
+		{ 138, "Mitsubishi Lancer Evolution X [X]" },
 		{ 140, "Colin McRae R4 [X Games]" }
 	};
 	const std::map<int, std::string> grades = {
