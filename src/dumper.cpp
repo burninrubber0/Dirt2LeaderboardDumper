@@ -150,7 +150,7 @@ tinyxml2::XMLDocument* Dumper::mergeSegments(std::vector<tinyxml2::XMLDocument*>
 void Dumper::save(tinyxml2::XMLDocument* board, bool saveAsCsv, int boardId, int disciplineId, bool isTimeBoard)
 {
 	std::string boardName = boards.contains(boardId) ? boards.at(boardId) : "unknown" + std::to_string(boardId);
-	std::string disciplineName = disciplines.contains(disciplineId) ? disciplines.at(disciplineId) : "unknown" + std::to_string(disciplineId);
+	std::string disciplineName = disciplines.at(disciplineId);
 	if (saveAsCsv)
 	{
 		std::string csv = makeCsv(board, isTimeBoard);
