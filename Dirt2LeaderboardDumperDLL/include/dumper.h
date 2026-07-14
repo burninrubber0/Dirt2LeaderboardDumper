@@ -1,29 +1,50 @@
-#include <httplib.h>
-#include <tinyxml2.h>
+#pragma once
 
+#include <config.h>
+#include <xlive.h>
+
+#include <filesystem>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <string>
+#include <Windows.h>
 
 class Dumper
 {
 public:
-	Dumper(int argc, char* argv[]);
-	int result = 0;
-	
+	enum class TitleId
+	{
+		Dirt2X360 = 0x434D0819,
+		Dirt2Pc = 0x434D0820
+	};
+
+	Dumper(HMODULE xlive, const Config& config);
+
+	void dump() const;
+
 private:
-	const int entriesPerRequest = 256; // Limited to 256 entries per request
-	const int numBoards = 289; // 289 leaderboards numbered sequentially
-	const int numDisciplines = 7;
-	
-	void dumpLeaderboard();
-	void setupRequest(tinyxml2::XMLDocument& request);
-	void updateRequest(tinyxml2::XMLDocument& request, int boardId, int entryIndex, int entryCount);
-	int getTotal(httplib::Result result);
-	tinyxml2::XMLDocument* mergeSegments(std::vector<tinyxml2::XMLDocument*>& segments, int boardId);
-	void save(tinyxml2::XMLDocument* board, bool saveAsCsv, int trackId, int disciplineId, bool isTimeBoard = true);
-	std::string makeCsv(tinyxml2::XMLDocument* board, bool isTimeBoard = true);
-	std::string formatAsTime(std::string milliseconds);
+	void dumpBoard(TitleId titleId, DWORD viewId,
+		std::filesystem::path& folder, std::ofstream& logFile) const;
+	std::unique_ptr<char[]> getEntryData(TitleId titleId, DWORD rankStart, DWORD numRows,
+		CONST XUSER_STATS_SPEC* spec, std::ofstream& logFile) const;
+	void updateStatus(DWORD viewId, std::string& leaderboardName,
+		DWORD currentRank, DWORD totalNumRows, bool isLastSegment) const;
+	void log(std::ofstream& logFile, const std::string& message, bool outputToConsole = false) const;
+	std::string formatAsTime(LONGLONG milliseconds) const;
+
+	const Config& config;
+
+	XUserCreateStatsEnumeratorByRank_t XUserCreateStatsEnumeratorByRank;
+	XEnumerate_t XEnumerate;
+
+	const DWORD maxRowsPerRequest = 100;
+	const DWORD totalNumLeaderboards = 289;
+
+	const std::map<TitleId, std::string> titles = {
+		{ TitleId::Dirt2X360, "Dirt 2 X360" },
+		{ TitleId::Dirt2Pc, "Dirt 2 PC" }
+	};
 
 	const std::map<int, std::string> boards = {
 		{ 1, "Baja - Ensenada Sprint" },

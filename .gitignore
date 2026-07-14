@@ -1,1 +1,8 @@
-build
+.vs/
+Debug/
+Release/
+x64/
+Dirt2LeaderboardDumperDLL/Debug/
+Dirt2LeaderboardDumperDLL/Release/
+Dirt2LeaderboardDumperDLL/x64/
+*.vcxproj.user

@@ -1,8 +1,22 @@
-# DiRT 2 Leaderboard Dumper
-Dumps the database for the DiRT 2 PS3 leaderboards. Uses POST requests to retrieve the ranking XMLs.
+# Dirt2LeaderboardDumperDLL
 
-Requests are limited to 256 records, so this tool gets 256-record segments and merges them into a single file for each leaderboard.
+Adjusts hidden settings for the transmission in Dirt 2:
 
-The output XML is just what's sent by the server. The CSV refines that data into something more readable and parses the info field. **Do not open the CSVs in Excel!** Excel can and will format times incorrectly. Use something like OpenOffice or just a text editor like notepad if you must.
+* Sets the transmission type to manual with manual clutch when a manual transmission (sequential or H pattern) is selected. By default, the game uses a slower auto clutch.
+* Sets the clutch button to be used as a clutch. By default, the game uses it as a brake.
 
-Xbox 360 is unsupported because traffic is encrypted. PC is similar, which makes sense as it uses GFWL. It might become possible to decrypt PC packets in the future, in which case I'll update this tool.
+# Controls
+
+The clutch input is unmapped or not fully configured on all devices except the Logitech G25. A modified XInput action map file is provided with the release which binds it to clicking the left stick. This was only chosen because the left stick isn't bound to anything else; you are encouraged to set your own bindings.
+
+Rebinding any controls in-game will cause the clutch to become unmapped after the next game restart. Only presets (stored in the action maps) can bind it. Thus, custom controls must be configured via the action map if you want the clutch to be enabled.
+
+# Installation
+
+Copy the files from the latest release to the game folder.
+
+Your game version must be 1.1. If it is not, install [the patch](https://www.patches-scrolls.com/colin_mcrae_dirt2.php). Support for 1.0 may be added later if there is demand for it.
+
+# Credits
+
+Uses code from [DllWrapper](https://github.com/SubstituteR/DllWrapper) and from [Matty's BPR mods](https://github.com/matty-ross/bpr-mods-repository). (Thanks Matty!)
