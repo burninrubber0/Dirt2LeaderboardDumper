@@ -2,7 +2,7 @@
 
 Scrapes the leaderboards for Colin McRae: Dirt 2.
 
-As the name suggests, this is done via DLL injection. Put simply, the DLL:
+As the name suggests, this is done via DLL injection. In theory, any GFWL game can be used. Put simply, the DLL:
 
 - Waits 60 seconds for the user to log into GFWL,
 - Calls `XUserCreateStatsEnumeratorByRank()` and `XEnumerate()` for the specified leaderboards and ranks, and
