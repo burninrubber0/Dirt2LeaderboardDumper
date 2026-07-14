@@ -1,22 +1,22 @@
 # Dirt2LeaderboardDumperDLL
 
-Adjusts hidden settings for the transmission in Dirt 2:
+Scrapes the leaderboards for Colin McRae: Dirt 2.
 
-* Sets the transmission type to manual with manual clutch when a manual transmission (sequential or H pattern) is selected. By default, the game uses a slower auto clutch.
-* Sets the clutch button to be used as a clutch. By default, the game uses it as a brake.
+As the name suggests, this is done via DLL injection. Put simply, the DLL:
 
-# Controls
+- Waits 60 seconds for the user to log into GFWL,
+- Calls `XUserCreateStatsEnumeratorByRank()` and `XEnumerate()` for the specified leaderboards and ranks, and
+- Saves the data as CSV.
 
-The clutch input is unmapped or not fully configured on all devices except the Logitech G25. A modified XInput action map file is provided with the release which binds it to clicking the left stick. This was only chosen because the left stick isn't bound to anything else; you are encouraged to set your own bindings.
+A configuration file `dumper_config.yaml` can be used. If it isn't, the entire Dirt 2 PC leaderboard is dumped by default. It contains the following options:
 
-Rebinding any controls in-game will cause the clutch to become unmapped after the next game restart. Only presets (stored in the action maps) can bind it. Thus, custom controls must be configured via the action map if you want the clutch to be enabled.
+- `titleId`: Hexadecimal title ID of the game to be dumped. Supported title IDs are 0x434D0819 (Dirt 2 X360) and 0x434D0820 (Dirt 2 PC).
+- `startLeaderboard` and `endLeaderboard`: Inclusive range of the leaderboards IDs to be dumped. Use an end of `0` to dump all leaderboards.
+- `startRank` and `endRank`: Inclusive range of the ranks to be dumped. Use an end of `0` to dump all ranks.
 
-# Installation
-
-Copy the files from the latest release to the game folder.
-
-Your game version must be 1.1. If it is not, install [the patch](https://www.patches-scrolls.com/colin_mcrae_dirt2.php). Support for 1.0 may be added later if there is demand for it.
+Support for Dirt 3 is planned. See [issue #2](https://github.com/burninrubber0/Dirt2LeaderboardDumper/issues/2).
 
 # Credits
 
-Uses code from [DllWrapper](https://github.com/SubstituteR/DllWrapper) and from [Matty's BPR mods](https://github.com/matty-ross/bpr-mods-repository). (Thanks Matty!)
+- SubstituteR for [DllWrapper](https://github.com/SubstituteR/DllWrapper), the 32-bit version of which is used as a base.
+- fktn-k for [fkYaml](https://github.com/fktn-k/fkYAML), used for YAML handling.
